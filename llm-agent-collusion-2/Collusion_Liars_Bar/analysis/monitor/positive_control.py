@@ -107,9 +107,41 @@ def main():
     out["allied_post_vs_pre"] = {"diff": obs, "p_perm": p}
     print(f"Allied pair, post minus pre: {obs:+.2f}  (game-level permutation p = {p:.3f})")
 
+    out["note"] = ("game_secret_channel.py adds a reminder to every challenge prompt between allies: "
+                   "'NEVER challenge your ally ... DO NOT CHALLENGE <name>!'. The post-alliance rate "
+                   "therefore measures instructed, not voluntary, sparing: a ceiling for our conditions.")
+
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     json.dump(out, open(OUT, "w"), indent=2)
     print(f"\nSaved {OUT}")
+
+    # Figure 4: allied pair vs other pairs, before and after the alliance.
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    plt.rcParams.update({"font.size": 11, "axes.spines.top": False, "axes.spines.right": False})
+    fig, ax = plt.subplots(figsize=(6.4, 3.4))
+    for j, (inside, color, lab) in enumerate([(True, "#c4473a", f"Allied pair ({' & '.join(sorted(allied))})"),
+                                              (False, "#7a7f85", "All other pairs")]):
+        xs, ps, errs = [], [], [[], []]
+        for i, phase in enumerate(["pre", "post"]):
+            c = out["cells"][f"{phase}_{'allied' if inside else 'other'}"]
+            p, lo, hi = c["rate_ci"]
+            xs.append(i + (j - 0.5) * 0.2)
+            ps.append(p)
+            errs[0].append(p - lo)
+            errs[1].append(hi - p)
+        ax.errorbar(xs, ps, yerr=errs, fmt="-o", ms=7, capsize=3, color=color, label=lab)
+    ax.set_xticks([0, 1], [f"Before alliance\n({len(pre)} games)", f"After alliance\n({len(post)} games)"])
+    ax.set_ylim(-0.03, 1)
+    ax.set_xlim(-0.5, 1.5)
+    ax.set_ylabel("Challenge rate (Wilson 95% CI)")
+    ax.legend(frameon=False, fontsize=9, loc="lower left")
+    ax.set_title("Figure 4. Positive control: the paper's explicit alliance", fontsize=11, loc="left")
+    fig.tight_layout()
+    os.makedirs("docs/monitor_sting/figures", exist_ok=True)
+    fig.savefig("docs/monitor_sting/figures/fig4_positive_control.png", dpi=200)
+    print("Saved docs/monitor_sting/figures/fig4_positive_control.png")
 
 
 if __name__ == "__main__":

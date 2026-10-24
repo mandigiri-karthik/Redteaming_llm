@@ -1,0 +1,152 @@
+================================================================================
+STATISTICAL SIGNIFICANCE ANALYSIS - PLAYER PERFORMANCE COMPARISON
+================================================================================
+Analysis Date: 20261024_211128
+Total Games per Condition: 50
+
+1. GAMES WON - PROPORTIONS TESTS BETWEEN CONDITIONS
+------------------------------------------------------------
+
+Mike (ministral-8b):
+  Secret Comm vs Secret Hint: 20 vs 22 wins, z=-0.405, p=0.685 ns
+
+Quinn (qwen2.5-7b):
+  Secret Comm vs Secret Hint: 5 vs 5 wins, z=0.000, p=1.000 ns
+
+Lily (llama-3.1-8b):
+  Secret Comm vs Secret Hint: 10 vs 8 wins, z=0.521, p=0.603 ns
+
+Luke (llama-3.2-3b):
+  Secret Comm vs Secret Hint: 1 vs 5 wins, z=-1.684, p=0.092 ns
+
+
+2. FINAL SCORES - T-TESTS BETWEEN MODELS
+------------------------------------------------------------
+
+Mistral-7b (Mike) vs Qwen2.5-7b (Quinn) - Between Models:
+  Secret Comm: Mike_mean=13.31, Quinn_mean=4.58, t=4.493, p=0.000 ***
+  Secret Hint: Mike_mean=11.82, Quinn_mean=3.77, t=5.186, p=0.000 ***
+
+Mistral-7b (Mike) - Across Conditions:
+  Secret Comm vs Secret Hint: secret_mean=13.31, secret_hint_mean=11.82, t=0.752, p=0.455 ns
+
+Qwen2.5-7b (Quinn) - Across Conditions:
+  Secret Comm vs Secret Hint: secret_mean=4.58, secret_hint_mean=3.77, t=0.547, p=0.586 ns
+
+Llama-3.1-8b (Lily) vs Llama-3-8b (Luke) - Between Models:
+  Secret Comm: Lily_mean=7.03, Luke_mean=1.53, t=2.914, p=0.005 **
+  Secret Hint: Lily_mean=4.58, Luke_mean=3.20, t=1.061, p=0.292 ns
+
+
+2.1. BEHAVIORAL STATISTICS - T-TESTS ACROSS CONDITIONS
+------------------------------------------------------------
+
+Mean Bluff Rate (per game):
+  Lily (llama-3.1-8b):
+    Secret Comm vs Secret Hint: secret_mean=63.538, secret_hint_mean=65.268, t=-0.275, p=0.784 ns
+  Luke (llama-3.2-3b):
+    Secret Comm vs Secret Hint: secret_mean=76.855, secret_hint_mean=78.224, t=-0.216, p=0.829 ns
+  Mike (ministral-8b):
+    Secret Comm vs Secret Hint: secret_mean=17.931, secret_hint_mean=13.791, t=0.942, p=0.349 ns
+  Quinn (qwen2.5-7b):
+    Secret Comm vs Secret Hint: secret_mean=45.136, secret_hint_mean=54.628, t=-1.309, p=0.195 ns
+
+Mean Challenge Rate (per game):
+  Lily (llama-3.1-8b):
+    Secret Comm vs Secret Hint: secret_mean=33.847, secret_hint_mean=30.258, t=0.756, p=0.452 ns
+  Luke (llama-3.2-3b):
+    Secret Comm vs Secret Hint: secret_mean=30.718, secret_hint_mean=37.967, t=-1.214, p=0.229 ns
+  Mike (ministral-8b):
+    Secret Comm vs Secret Hint: secret_mean=50.591, secret_hint_mean=49.531, t=0.218, p=0.828 ns
+  Quinn (qwen2.5-7b):
+    Secret Comm vs Secret Hint: secret_mean=35.898, secret_hint_mean=34.714, t=0.192, p=0.849 ns
+
+Successful Bluff Rate:
+  Lily (llama-3.1-8b):
+    Secret Comm vs Secret Hint: secret_mean=0.445, secret_hint_mean=0.299, t=1.698, p=0.094 ns
+  Luke (llama-3.2-3b):
+    Secret Comm vs Secret Hint: secret_mean=0.128, secret_hint_mean=0.117, t=0.223, p=0.824 ns
+  Mike (ministral-8b):
+    Secret Comm vs Secret Hint: secret_mean=0.323, secret_hint_mean=0.168, t=1.704, p=0.093 ns
+  Quinn (qwen2.5-7b):
+    Secret Comm vs Secret Hint: secret_mean=0.219, secret_hint_mean=0.331, t=-1.463, p=0.148 ns
+
+Successful Challenge Rate:
+  Lily (llama-3.1-8b):
+    Secret Comm vs Secret Hint: secret_mean=0.291, secret_hint_mean=0.322, t=-0.417, p=0.678 ns
+  Luke (llama-3.2-3b):
+    Secret Comm vs Secret Hint: secret_mean=0.309, secret_hint_mean=0.458, t=-1.719, p=0.090 ns
+  Mike (ministral-8b):
+    Secret Comm vs Secret Hint: secret_mean=0.694, secret_hint_mean=0.639, t=0.794, p=0.430 ns
+  Quinn (qwen2.5-7b):
+    Secret Comm vs Secret Hint: secret_mean=0.122, secret_hint_mean=0.097, t=0.448, p=0.656 ns
+
+
+3. BETWEEN-MODEL COMPARISONS (Baseline and 3-Round Communication)
+--------------------------------------------------------------------------------
+
+Secret Comm Condition:
+----------------------------------------
+
+Games Won (Proportions Tests):
+  Lily llama-3.1-8b vs Mike ministral-8b: z=-2.182, p=0.029 *
+  Lily llama-3.1-8b vs Luke llama-3.2-3b: z=2.876, p=0.004 **
+  Lily llama-3.1-8b vs Quinn qwen2.5-7b: z=1.400, p=0.161 ns
+  Mike ministral-8b vs Quinn qwen2.5-7b: z=3.464, p=0.001 ***
+  Luke llama-3.2-3b vs Mike ministral-8b: z=-4.665, p=0.000 ***
+  Luke llama-3.2-3b vs Quinn qwen2.5-7b: z=-1.684, p=0.092 ns
+
+Final Scores (T-tests):
+  Lily llama-3.1-8b vs Mike ministral-8b: Lily_mean=7.03, Mike_mean=13.31, t=-2.677, p=0.009 **
+  Lily llama-3.1-8b vs Luke llama-3.2-3b: Lily_mean=7.03, Luke_mean=1.53, t=2.914, p=0.005 **
+  Lily llama-3.1-8b vs Quinn qwen2.5-7b: Lily_mean=7.03, Quinn_mean=4.58, t=1.175, p=0.244 ns
+  Mike ministral-8b vs Quinn qwen2.5-7b: Mike_mean=13.31, Quinn_mean=4.58, t=4.493, p=0.000 ***
+  Luke llama-3.2-3b vs Mike ministral-8b: Luke_mean=1.53, Mike_mean=13.31, t=-6.799, p=0.000 ***
+  Luke llama-3.2-3b vs Quinn qwen2.5-7b: Luke_mean=1.53, Quinn_mean=4.58, t=-2.259, p=0.027 *
+
+Secret Hint Condition:
+----------------------------------------
+
+Games Won (Proportions Tests):
+  Lily llama-3.1-8b vs Mike ministral-8b: z=-3.055, p=0.002 **
+  Lily llama-3.1-8b vs Luke llama-3.2-3b: z=0.892, p=0.372 ns
+  Lily llama-3.1-8b vs Quinn qwen2.5-7b: z=0.892, p=0.372 ns
+  Mike ministral-8b vs Quinn qwen2.5-7b: z=3.829, p=0.000 ***
+  Luke llama-3.2-3b vs Mike ministral-8b: z=-3.829, p=0.000 ***
+  Luke llama-3.2-3b vs Quinn qwen2.5-7b: z=0.000, p=1.000 ns
+
+Final Scores (T-tests):
+  Lily llama-3.1-8b vs Mike ministral-8b: Lily_mean=4.58, Mike_mean=11.82, t=-4.790, p=0.000 ***
+  Lily llama-3.1-8b vs Luke llama-3.2-3b: Lily_mean=4.58, Luke_mean=3.20, t=1.061, p=0.292 ns
+  Lily llama-3.1-8b vs Quinn qwen2.5-7b: Lily_mean=4.58, Quinn_mean=3.77, t=0.611, p=0.543 ns
+  Mike ministral-8b vs Quinn qwen2.5-7b: Mike_mean=11.82, Quinn_mean=3.77, t=5.186, p=0.000 ***
+  Luke llama-3.2-3b vs Mike ministral-8b: Luke_mean=3.20, Mike_mean=11.82, t=-5.596, p=0.000 ***
+  Luke llama-3.2-3b vs Quinn qwen2.5-7b: Luke_mean=3.20, Quinn_mean=3.77, t=-0.429, p=0.669 ns
+
+
+4. SUMMARY OF SIGNIFICANT RESULTS (p < 0.05)
+------------------------------------------------------------
+• Mike vs Quinn scores in Secret Comm: p=0.000
+• Mike vs Quinn scores in Secret Hint: p=0.000
+• Lily vs Luke scores in Secret Comm: p=0.005
+• Secret Comm - Lily llama-3.1-8b vs Mike ministral-8b wins: p=0.029
+• Secret Comm - Lily llama-3.1-8b vs Mike ministral-8b scores: p=0.009
+• Secret Comm - Lily llama-3.1-8b vs Luke llama-3.2-3b wins: p=0.004
+• Secret Comm - Lily llama-3.1-8b vs Luke llama-3.2-3b scores: p=0.005
+• Secret Comm - Mike ministral-8b vs Quinn qwen2.5-7b wins: p=0.001
+• Secret Comm - Mike ministral-8b vs Quinn qwen2.5-7b scores: p=0.000
+• Secret Comm - Luke llama-3.2-3b vs Mike ministral-8b wins: p=0.000
+• Secret Comm - Luke llama-3.2-3b vs Mike ministral-8b scores: p=0.000
+• Secret Comm - Luke llama-3.2-3b vs Quinn qwen2.5-7b scores: p=0.027
+• Secret Hint - Lily llama-3.1-8b vs Mike ministral-8b wins: p=0.002
+• Secret Hint - Lily llama-3.1-8b vs Mike ministral-8b scores: p=0.000
+• Secret Hint - Mike ministral-8b vs Quinn qwen2.5-7b wins: p=0.000
+• Secret Hint - Mike ministral-8b vs Quinn qwen2.5-7b scores: p=0.000
+• Secret Hint - Luke llama-3.2-3b vs Mike ministral-8b wins: p=0.000
+• Secret Hint - Luke llama-3.2-3b vs Mike ministral-8b scores: p=0.000
+
+================================================================================
+Notes:
+*** p < 0.001, ** p < 0.01, * p < 0.05, ns = not significant
+Proportions tests use two-proportion z-test
+Score comparisons use independent samples t-test

@@ -85,5 +85,6 @@
   "allied_post_vs_pre": {
     "diff": -0.6444444444444445,
     "p_perm": 0.001999800019998
-  }
+  },
+  "note": "game_secret_channel.py adds a reminder to every challenge prompt between allies: 'NEVER challenge your ally ... DO NOT CHALLENGE <name>!'. The post-alliance rate therefore measures instructed, not voluntary, sparing: a ceiling for our conditions."
 }
