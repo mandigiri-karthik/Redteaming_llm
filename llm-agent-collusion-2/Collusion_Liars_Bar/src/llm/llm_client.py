@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
@@ -27,6 +28,9 @@ from poseidon_compute import make_client, resolve_model
 # a parent directory can never leak in.
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 load_dotenv(_PROJECT_ROOT / ".env")
+
+# Set LLM_VERBOSE=0 to stop printing every request/response (useful for parallel batch runs).
+_VERBOSE = os.environ.get("LLM_VERBOSE", "1") != "0"
 
 
 class LLMClient:
@@ -42,6 +46,8 @@ class LLMClient:
         "qwen2.5-7b":   "Qwen/Qwen2.5-7B-Instruct",
         "llama-3.2-3b": "meta-llama/Llama-3.2-3B-Instruct",       # was llama-3-8b
         "ministral-8b": "mistralai/Ministral-8B-Instruct-2410",   # was mistral-7b
+        # Not a player: labels free-text replies in the monitor experiment (game_monitor.py).
+        "llama-3.3-70b": "meta-llama/Llama-3.3-70B-Instruct",
     }
 
     def __init__(self):
@@ -78,7 +84,8 @@ class LLMClient:
                 f"Not substituting another model — add it to MODEL_MAP or pick a supported one."
             )
         try:
-            print(f"LLM Request to {model}: {messages}")
+            if _VERBOSE:
+                print(f"LLM Request to {model}: {messages}")
             params = self._sampling(model)
             completion = self._client.chat.completions.create(
                 model=resolve_model(self.MODEL_MAP[model]),
@@ -90,7 +97,8 @@ class LLMClient:
                 extra_body={"top_k": params["top_k"], "repetition_penalty": params["repetition_penalty"]},
             )
             response = self._clean_response(completion.choices[0].message.content or "", model)
-            print(f"LLM Response: {response}")
+            if _VERBOSE:
+                print(f"LLM Response: {response}")
             return response, ""
         except Exception as e:
             # Re-raise fatal misconfiguration (bad key / unknown model / bad request) so the game stops
@@ -104,7 +112,14 @@ class LLMClient:
                 _FATAL = ()
             if _FATAL and isinstance(e, _FATAL):
                 raise
+            status = getattr(e, "status_code", None)
+            # 402 = out of credits: every later call fails too, so stop rather than play on
+            # fallback moves.
+            if status == 402:
+                raise
             print(f"LLM error: {str(e)}")
+            if status == 429:
+                time.sleep(5)  # upstream rate limit; the caller retries
             return "", ""
 
     # ------------------------------------------------------------------
@@ -131,6 +146,13 @@ class LLMClient:
         json_match = re.search(r'(\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\})', response)
         if json_match:
             json_str = json_match.group(1)
+            # Parse first: the repairs below also rewrite text inside string values (e.g.
+            # "plan: Quinn" -> 'plan: "Quinn"'), which breaks JSON that was already valid.
+            # strict=False accepts raw newlines inside strings, which small models emit.
+            try:
+                return json.dumps(json.loads(json_str, strict=False), indent=2)
+            except json.JSONDecodeError:
+                pass
             json_str = re.sub(r':\s*(?!true\b|false\b|null\b)([A-Za-z][A-Za-z0-9]*)', r': "\1"', json_str)
             json_str = re.sub(r'\[\s*(?!true\b|false\b|null\b)([A-Za-z0-9]+)\s*,\s*(?!true\b|false\b|null\b)([A-Za-z0-9]+)\s*\]', r'["\1", "\2"]', json_str)
             json_str = re.sub(r'\[\s*(?!true\b|false\b|null\b)([A-Za-z0-9]+)\s*\]', r'["\1"]', json_str)

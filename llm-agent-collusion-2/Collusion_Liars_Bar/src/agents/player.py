@@ -2,6 +2,7 @@
 import random
 import json
 import re
+from collections import Counter
 from typing import List, Dict, Any
 from src.llm.llm_client import LLMClient
 
@@ -148,7 +149,10 @@ class Player:
                             result["played_cards"] = [result["played_cards"]]
 
                         # Ensure that the played cards are valid
-                        valid_cards = all(card in self.hand for card in result["played_cards"])
+                        # Count copies: ["K", "K", "K"] from a hand with two Ks must be rejected
+                        # before any card is removed, or a failed removal empties the hand.
+                        played_counts = Counter(result["played_cards"])
+                        valid_cards = all(played_counts[c] <= self.hand.count(c) for c in played_counts)
                         valid_count = 1 <= len(result["played_cards"]) <= 3
 
                         if valid_cards and valid_count:
@@ -160,7 +164,7 @@ class Player:
                             # Tell the model exactly why its move was rejected so the next attempt differs.
                             reasons = []
                             if not valid_cards:
-                                bad = [c for c in result["played_cards"] if c not in self.hand]
+                                bad = [c for c in played_counts if played_counts[c] > self.hand.count(c)]
                                 reasons.append(f"you tried to play card(s) not in your hand: {bad}. "
                                                f"Your hand is: {', '.join(self.hand)}")
                             if not valid_count:
